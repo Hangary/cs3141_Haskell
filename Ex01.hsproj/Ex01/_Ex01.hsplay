@@ -1,0 +1,11 @@
+-- Haskell Playground 1.0
+let myRed = Colour 255 0 0 80
+drawPicture 100 (simpleCirclePic myRed 50)
+
+
+let myRed = red { opacityC = 180 }
+let xy = (Point 400 400)
+let v = (Vector (-100) (-100))
+let circ = Polygon (cosToPOs houseCOs) myRed Solid SolidFill
+
+drawPicture 1 [circ, movePictureObject v circ]
