@@ -71,7 +71,6 @@ movePictureObject vec (Polygon points colour lineStyle fillStyle)
     where movedPoints = map (`movePoint` vec) points 
 
 
-
 -- Part 3
 
 

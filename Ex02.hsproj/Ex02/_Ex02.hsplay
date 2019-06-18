@@ -1,0 +1,10 @@
+-- Haskell Playground 1.0
+let sortFn = dodgySort4
+let nums = [1, 5, 3, 2, 4, 1] :: [Int]
+
+
+sortProp1 sortFn nums
+sortProp2 sortFn 1 nums [2]
+sortProp3 sortFn nums
+sortProp4 sortFn nums
+sortProp5 sortFn nums
