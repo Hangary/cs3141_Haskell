@@ -8,3 +8,9 @@ sortProp2 sortFn 1 nums [2]
 sortProp3 sortFn nums
 sortProp4 sortFn nums
 sortProp5 sortFn nums
+
+quickCheck $ sortProp1 sortFn
+quickCheck $ sortProp2 sortFn
+quickCheck $ sortProp3 sortFn
+quickCheck $ sortProp4 sortFn
+quickCheck $ sortProp5 sortFn
