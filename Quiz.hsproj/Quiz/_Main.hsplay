@@ -6,6 +6,8 @@ let notAlpha = " 123521 !"
 
 rot13 words
 
+-- quickCheck test7
+
 test1 words
 test2 words
 test3 words
@@ -17,6 +19,8 @@ test7 words
 
 
 -- Q2
+--quickCheck q2t6
+
 let nums1 = [1,3,2,4,1,5]
 let nums2 = [0,2,10]
 
@@ -28,10 +32,12 @@ q2t5 nums1 nums2
 q2t6 nums1 nums2
 
 -- Q3
-fromBinary "100"
+fromBinary ""
 toBinary 4
+--quickCheck q3t3
 
 -- Q4
+-- quickCheck q4t6
 let ys = [1,1,2,3,4]
 let xs = [1]
 
@@ -43,4 +49,19 @@ length (dedup xs) < length xs
 
 
 -- Q5
-quickCheck prop_2
+--quickCheck q5t2
+
+
+
+-- Q6
+--quickCheck q6t1
+
+
+-- Q7
+--quickCheck q7t3
+
+-- Q8
+--quickCheck q8t3
+
+
+

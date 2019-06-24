@@ -4,50 +4,72 @@ import ShapeGraphics
 import Codec.Picture
 
 art :: Picture
-art = fracTree 15 100 10 -- replace with something else
-
-fracTree :: Float -> Float -> Int -> Picture
-fracTree width height n
-  = fTree (Point  (400 - width / 2) 800) (Vector 0 (-height))
-                  (Vector width 0) red n
+art = spirals ++ eye
   where
-    
-    toBlue :: Colour -> Colour
-    toBlue (Colour r g b o) = 
-      Colour (max 0 (r - 15)) g (min 255 (b + 15)) o
-    angle = pi/8
-    fTree :: Point -> Vector -> Vector -> Colour -> Int -> Picture
-    fTree pos vec1 vec2 col n
-      | n <= 1 = [Polygon [pos, movePoint vec1 pos, 
-                                movePoint vec2 $ movePoint vec1 pos, 
-                                movePoint vec2 pos]
-                          col
-                          Solid
-                          SolidFill]
-                          
-      | otherwise = fTree pos vec1 vec2 col (n - 1) ++
-                    fTree (movePoint vec1 pos) 
-                          (scaleVector 0.8 $ rotateVector (0.5 * angle) vec1)
-                          (scaleVector 0.8 $ rotateVector (0.5 * angle) vec2) 
-                          (toBlue col) (n - 1) ++
-                    fTree (movePoint vec1 pos) 
-                          (scaleVector 0.8 $ rotateVector (-angle) vec1)
-                          (scaleVector 0.8 $ rotateVector (-angle) vec2) 
-                          (toBlue col) (n - 1) 
+    spirals :: [PictureObject]
+    spirals = spiralLines 1.1 magenta $ Line (Point 395 395) (Point 405 405)
+    eye :: [PictureObject]
+    eye = [eyeball, eyeout]
+      where 
+        eyeball :: PictureObject
+        eyeball = Circle (Point 400 400) 30 white Dashed NoFill
+        eyeout :: PictureObject
+        eyeout = Ellipse (Point 400 400) 90 35 0 white Solid NoFill 
 
+-- This is adapted from learning Haskell
+
+spiralLines :: Float -> Colour -> Line -> [PictureObject]
+spiralLines factor colour startLine = spiralLines' factor colour startLine
+  where
+    angle = pi/10 + 1
+    spiralLines' factor colour startLine
+      | factor <= 1 = []
+      | otherwise = (Path (spiral angle factor 100 startLine ) colour Solid) : (spiralLines' (factor - 0.02) (fadeColour colour) startLine)
+
+        
+spiral :: Float -> Float -> Int -> Line -> [Point]
+spiral angle scaleFactor n line
+  = spiral' n line
+  where
+    spiral' n line@(Line p1 p2)
+      | n <= 0    = []
+      | otherwise = p1 : spiral' (n - 1) newLine
+      where
+        newLine :: Line
+        newLine = connectLine line (scaleLine scaleFactor (rotateLine angle line))
+
+
+rotateLine :: Float -> Line -> Line
+rotateLine alpha (Line (Point x1 y1) (Point x2 y2))
+  = Line (Point x1 y1) (Point (x' + x1) (y' + y1))
+  where
+      x0 = x2 - x1
+      y0 = y2 - y1
+      x' = x0 * cos alpha - y0 * sin alpha
+      y' = x0 * sin alpha + y0 * cos alpha
       
-scaleVector :: Float -> Vector -> Vector
-scaleVector fac (Vector x y)
-  = Vector (fac * x) (fac * y)                           
- 
-rotateVector :: Float -> Vector -> Vector
-rotateVector alpha (Vector vx vy)
-  = Vector (cos alpha * vx - sin alpha * vy)
-           (sin alpha * vx + cos alpha * vy)
 
-movePoint :: Vector -> Point -> Point
-movePoint (Vector xv yv) (Point xp yp)
-  = Point (xv + xp) (yv + yp)
+fadeColour :: Colour -> Colour
+fadeColour (Colour red green blue opacity)
+  = Colour red green blue (opacity - 50)
+    
+
+scaleLine :: Float -> Line -> Line
+scaleLine factor (Line (Point x1 y1) (Point x2 y2))
+  = Line (Point x1 y1) (Point (x' + x1) (y' + y1))
+  where
+    x0 = x2 - x1
+    y0 = y2 - y1
+    x' = factor * x0 
+    y' = factor * y0
+
+
+connectLine :: Line -> Line -> Line
+connectLine (Line _ endPoint) secondLine = startLineFrom endPoint secondLine
+  where startLineFrom :: Point -> Line -> Line
+        startLineFrom startPoint@(Point x0 y0) (Line (Point xS yS) (Point xE yE))
+            = Line startPoint (Point (x0 + xE - xS) (y0 + yE - yS))
+
 
 -- use 'writeToFile' to write a picture to file "ex01.png" to test your
 -- program if you are not using Haskell for Mac

@@ -23,7 +23,7 @@ test3 x = rot13 (map f x) == map f (rot13 x)
 test4 x = rot13 x == x
 test5 a b = rot13 (a ++ b) == rot13 a ++ rot13 b
 -- input: not (null x)
-test6 x = ord (head x) + 13 == ord (head (rot13 x)) 
+test6 x = not (null x) ==> ord (head x) + 13 == ord (head (rot13 x)) 
 test7 x = rot13 (rot13 x) == x
 
 
@@ -61,6 +61,13 @@ fromBinary = fst . foldr eachChar (0,1)
     eachChar _   (sum, m) = (sum    , m*2)
     
 
+q3t1 i = i >= 0 ==> fromBinary (toBinary i) == i
+q3t2 s = all (`elem` "01") s ==> toBinary (fromBinary s) == s
+q3t3 s = (read s :: Int) >= fromBinary s
+q3t4 i = i > 0 ==> length (toBinary i) >= length (show i)
+q3t5 s = all (`elem` "01") s ==> fromBinary s == fromBinary ('0':s)
+
+
 -- Q4
 dedup :: (Eq a) => [a] -> [a]
 dedup (x:y:xs) | x == y = dedup (y:xs)
@@ -86,18 +93,19 @@ foo :: [a] -> (a -> b) -> [b]
 foo [] f = []
 foo (x:xs) f = f x : foo xs f
 
-prop_1 :: [Int] -> Bool
-prop_1 xs = foo xs id == xs 
 
-prop_2 :: [Int] -> Bool
-prop_2 xs = foo (foo xs f) g == foo xs (g . f)
+q5t1 :: [Int] -> Bool
+q5t1 xs = foo xs id == xs 
+
+q5t2 :: [Int] -> Bool
+q5t2 xs = foo (foo xs f) g == foo xs (g . f)
   where f = \x -> x + 1
         g = \x -> x * 2
 
 
 -- Q6
 bar :: [Int] -> [Int]
-bar = undefined
+bar xs = replicate (length xs) (maximum xs)
 
 q6t1 :: [Int] -> Bool
 q6t1 xs = bar (bar xs) == xs
@@ -105,5 +113,35 @@ q6t1 xs = bar (bar xs) == xs
 q6t2 :: [Int] -> Bool
 q6t2 xs = length xs == length (bar xs)
 
-q6t3 :: [Int] -> (Int -> Int) -> Bool
-q6t3 xs f = bar (map f xs) == map f (bar xs)
+q6t3 :: [Int] -> Bool
+q6t3 xs = bar (map f xs) == map f (bar xs)
+  where f = \x -> x - 1
+  
+
+-- Q7
+baz :: [Integer] -> Integer
+baz xs = 0
+
+q7t1 :: [Integer] -> [Integer] -> Bool
+q7t1 xs ys = baz xs + baz ys == baz (xs ++ ys)
+
+q7t2 :: [Integer] -> Bool
+q7t2 xs = baz xs == baz (reverse xs) 
+
+q7t3 :: Integer -> [Integer] -> Bool 
+q7t3 x xs = baz (x:xs) - x == baz xs
+
+
+-- Q8
+fun :: [Integer] -> [Integer]
+fun []       = []
+fun [x]      = []
+fun (x:y:xs) = (y-x):fun (y:xs)
+
+nuf xs i = scanl (\v x -> v + x) i xs
+
+q8t1 :: [Integer] -> Integer -> Bool
+q8t1 xs x = nuf (fun (x:xs)) x == (x:xs)
+
+q8t2 :: [Integer] -> Integer -> Bool
+q8t2 xs x = fun (nuf xs x) == xs

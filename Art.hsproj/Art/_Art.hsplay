@@ -1,4 +1,2 @@
 -- Haskell Playground 1.0
-drawPicture 1 eye
-
-drawPicture 2 (spiralRays ++ eye)
+drawPicture 2 art
