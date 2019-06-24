@@ -4,10 +4,19 @@ import ShapeGraphics
 import Codec.Picture
 
 art :: Picture
-art = spirals ++ eye
+art = generateSpiralEye 1.1 (pi/10 + 1) magenta $ Line (Point 395 395) (Point 405 405)  -- you can change arguments here
+
+
+-- we can generate different graphs by changing the factor, angle, colour and startLine
+-- factor: decide how many lines for each sprials, should be above 1
+-- angle: the angle of spirals
+-- colour: the colour of spirals
+-- startLine: the start line of spirals
+generateSpiralEye :: Float -> Float -> Colour -> Line -> [PictureObject]
+generateSpiralEye factor angle colour startLine = spirals ++ eye
   where
     spirals :: [PictureObject]
-    spirals = spiralLines 1.1 magenta $ Line (Point 395 395) (Point 405 405)
+    spirals = spiralLines factor angle colour startLine 
     eye :: [PictureObject]
     eye = [eyeball, eyeout]
       where 
@@ -17,15 +26,13 @@ art = spirals ++ eye
         eyeout = Ellipse (Point 400 400) 90 35 0 white Solid NoFill 
 
 
-spiralLines :: Float -> Colour -> Line -> [PictureObject]
-spiralLines factor colour startLine = spiralLines' factor colour startLine
-  where
-    angle = pi/10 + 1
-    spiralLines' factor colour startLine
+spiralLines :: Float -> Float -> Colour -> Line -> [PictureObject]
+spiralLines factor angle colour startLine
       | factor <= 1 = []
-      | otherwise = (Path (spiral angle factor 100 startLine ) colour Solid) : (spiralLines' (factor - 0.02) (fadeColour colour) startLine)
+      | otherwise = (Path (spiral angle factor 100 startLine) colour Solid) : (spiralLines (factor - 0.02) angle (fadeColour colour) startLine)
 
-        
+
+-- this will generate a spiral
 spiral :: Float -> Float -> Int -> Line -> [Point]
 spiral angle scaleFactor n line
   = spiral' n line
@@ -37,7 +44,7 @@ spiral angle scaleFactor n line
         newLine :: Line
         newLine = connectLine line (scaleLine scaleFactor (rotateLine angle line))
 
--- This is adapted from learning Haskell
+-- Following functions are adapted from learning Haskell
 rotateLine :: Float -> Line -> Line
 rotateLine alpha (Line (Point x1 y1) (Point x2 y2))
   = Line (Point x1 y1) (Point (x' + x1) (y' + y1))
