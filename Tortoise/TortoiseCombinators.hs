@@ -52,7 +52,11 @@ loop n i
 
 
 invisibly :: Instructions -> Instructions
-invisibly i = PenUp $ invisibly_helper i True 
+invisibly i 
+  = case i of 
+      PenUp i2 -> PenUp $ invisibly_helper i2 False
+      Stop -> Stop
+      _  -> PenUp $ invisibly_helper i True 
 
 
 invisibly_helper :: Instructions -> Bool -> Instructions
