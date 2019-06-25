@@ -55,6 +55,7 @@ loop n i
 invisibly :: Instructions -> Instructions
 invisibly i 
   = case i of 
+      Stop -> Stop
       PenDown i2 -> PenUp $ invisibly i2
       _ -> setNextInstruction i $ invisibly $ getNextInstruction i
 
