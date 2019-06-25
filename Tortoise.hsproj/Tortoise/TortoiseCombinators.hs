@@ -12,8 +12,7 @@ import Tortoise
 -- of these combinators.
 
 
--- two helper functions
-
+-- two helper functions:
 -- getter
 getNextInstruction :: Instructions -> Instructions
 getNextInstruction instructions_1
@@ -53,11 +52,18 @@ loop n i
 
 
 invisibly :: Instructions -> Instructions
-invisibly i 
+invisibly i = PenUp $ invisibly_helper i True 
+
+
+invisibly_helper :: Instructions -> Bool -> Instructions
+invisibly_helper i shouldDown
   = case i of 
-      Stop -> Stop
-      PenDown i2 -> PenUp $ invisibly i2
-      _ -> PenUp (setNextInstruction i $ invisibly $ getNextInstruction i)
+      PenDown i2 -> PenUp (invisibly_helper i2 True)
+      PenUp i2 -> PenUp (invisibly_helper i2 False)
+      Stop -> case shouldDown of
+                True -> PenDown Stop
+                False -> Stop
+      _ -> setNextInstruction i $ invisibly $ getNextInstruction i          
 
 
 retrace :: Instructions -> Instructions
