@@ -12,6 +12,9 @@ import Tortoise
 -- of these combinators.
 
 
+-- two helper functions
+
+-- getter
 getNextInstruction :: Instructions -> Instructions
 getNextInstruction instructions_1
     = case instructions_1 of 
@@ -22,7 +25,7 @@ getNextInstruction instructions_1
           PenDown instructions_2 -> instructions_2
           PenUp instructions_2 -> instructions_2
 
--- not finished
+-- setter
 setNextInstruction :: Instructions -> Instructions -> Instructions
 setNextInstruction instructions_1 instructions_2 
     = case instructions_1 of 
@@ -40,18 +43,25 @@ andThen instructions_1 Stop = instructions_1
 andThen instructions_1 instructions_2 
     = case (getNextInstruction instructions_1) of
           Stop -> setNextInstruction instructions_1 instructions_2 
-          _    -> setNextInstruction instructions_1 $ andThen (getNextInstruction instructions_1) instructions_2
-      
-          
+          _    -> setNextInstruction instructions_1 $  (getNextInstruction instructions_1) `andThen` instructions_2
+
 
 loop :: Int -> Instructions -> Instructions
-loop n i = error "'loop' unimplemented"
+loop n i 
+  | n <= 0 = Stop
+  | otherwise = i `andThen` loop (n - 1) i
+
 
 invisibly :: Instructions -> Instructions
-invisibly i = error "'invisibly' unimplemented"
+invisibly i 
+  = case i of 
+      PenDown i2 -> PenUp $ invisibly i2
+      _ -> setNextInstruction i $ invisibly $ getNextInstruction i
+
 
 retrace :: Instructions -> Instructions
 retrace i = error "'retrace' unimplemented"
+
 
 overlay :: [Instructions] -> Instructions
 overlay is = error "'overlay' unimplemented"

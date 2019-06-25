@@ -16,8 +16,8 @@ executable Tortoise
         QuickCheck -any
     default-language: Haskell2010
     other-modules:
-        TortoiseGraphics
         TortoiseCombinators
+        TortoiseGraphics
         Tortoise
 
 executable TortoiseTests
