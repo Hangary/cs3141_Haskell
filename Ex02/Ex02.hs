@@ -11,7 +11,7 @@ dodgySort1 xs = xs
 
 -- prop1 & 2 & 3, but not prop4 & 5
 dodgySort2 :: [Int] -> [Int]
-dodgySort2 xs = reverse . nub . reverse $ sort xs
+dodgySort2 xs = nub $ sort xs
 
 
 -- prop1 & 3 & 4, but not prop2 & 5
@@ -21,11 +21,10 @@ dodgySort3 xs = take (length xs) (repeat $ maximum xs)
 
 -- prop1 & 2 & 3 & 4, but not prop5
 dodgySort4 :: [Int] -> [Int]
-dodgySort4 xs = sortedUnique ++ repeated
+dodgySort4 xs = sortedUnique ++ repeatedMax
                 where 
-                  sortedUnique = reverse . nub . reverse $ sort xs
-                  repeated = take (length xs - length sortedUnique) (repeat $ maximum xs)
-
+                  sortedUnique = nub $ sort xs
+                  repeatedMax = take (length xs - length sortedUnique) (repeat $ maximum xs)
 
 -- Properties of sorting function    
 
