@@ -29,7 +29,7 @@ executable TortoiseTests
         tasty-quickcheck -any
     default-language: Haskell2010
     other-modules:
-        TortoiseCombinators
         TestSupport
+        TortoiseCombinators
         Tortoise
 
