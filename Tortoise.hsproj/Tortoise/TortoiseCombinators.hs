@@ -44,20 +44,20 @@ andThen instructions_1 instructions_2
     = case (getNextInstruction instructions_1) of
           Stop -> setNextInstruction instructions_1 instructions_2 
           _    -> setNextInstruction instructions_1 $  (getNextInstruction instructions_1) `andThen` instructions_2
-      
-          
+
 
 loop :: Int -> Instructions -> Instructions
 loop n i 
   | n <= 0 = Stop
   | otherwise = i `andThen` loop (n - 1) i
 
+
 invisibly :: Instructions -> Instructions
 invisibly i 
   = case i of 
       Stop -> Stop
       PenDown i2 -> PenUp $ invisibly i2
-      _ -> setNextInstruction i $ invisibly $ getNextInstruction i
+      _ -> PenUp (setNextInstruction i $ invisibly $ getNextInstruction i)
 
 
 retrace :: Instructions -> Instructions
