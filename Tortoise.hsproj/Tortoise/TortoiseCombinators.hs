@@ -62,12 +62,12 @@ invisibly i
 invisibly_helper :: Instructions -> Bool -> Instructions
 invisibly_helper i shouldDown
   = case i of 
-      PenDown i2 -> PenUp (invisibly_helper i2 True)
-      PenUp i2 -> PenUp (invisibly_helper i2 False)
+      PenDown i2 -> PenUp $ invisibly_helper i2 True
+      PenUp i2 -> PenUp $ invisibly_helper i2 False
       Stop -> case shouldDown of
                 True -> PenDown Stop
                 False -> Stop
-      _ -> setNextInstruction i $ invisibly $ getNextInstruction i          
+      _ -> setNextInstruction i $ invisibly_helper (getNextInstruction i) shouldDown
 
 
 retrace :: Instructions -> Instructions
