@@ -71,7 +71,14 @@ invisibly_helper i shouldDown
 
 
 retrace :: Instructions -> Instructions
-retrace i = error "'retrace' unimplemented"
+retrace i = retrace_helper i Stop
+
+
+retrace_helper :: Instructions -> Instructions -> Instructions
+retrace_helper i last_i
+  | i == Stop = last_i
+  | otherwise = retrace_helper (getNextInstruction i) $ setNextInstruction i last_i
+
 
 overlay :: [Instructions] -> Instructions
 overlay is = error "'overlay' unimplemented"
