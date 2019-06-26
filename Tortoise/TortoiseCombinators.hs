@@ -75,7 +75,7 @@ retrace i = retrace_helper i Stop
 
 retrace_helper :: Instructions -> Instructions -> Instructions
 retrace_helper i reversed_i
-  | i == Stop = reversed_i
+  | getNextInstruction i == Stop = reversed_i
   | reverseInstruction i == Stop = reversed_i
   | otherwise = retrace_helper (getNextInstruction i) $ setNextInstruction (reverseInstruction i) reversed_i
   where 

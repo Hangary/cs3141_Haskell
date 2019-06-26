@@ -16,9 +16,9 @@ executable Tortoise
         QuickCheck -any
     default-language: Haskell2010
     other-modules:
-        TortoiseCombinators
         TortoiseGraphics
         Tortoise
+        TortoiseCombinators
 
 executable TortoiseTests
     main-is: Tests.hs
@@ -30,6 +30,6 @@ executable TortoiseTests
     default-language: Haskell2010
     other-modules:
         TestSupport
-        TortoiseCombinators
         Tortoise
+        TortoiseCombinators
 
