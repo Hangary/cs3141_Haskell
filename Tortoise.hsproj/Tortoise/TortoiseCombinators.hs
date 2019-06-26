@@ -110,8 +110,12 @@ retrace_helper curr_state toreverse_i reversed_i
       reverseInstruction i = case i of 
           Move distance instructions -> Move (-distance) instructions
           Turn angle instructions -> Turn (-angle) instructions
-          PenUp instructions -> PenDown instructions
-          PenDown instructions -> PenUp instructions
+          PenUp instructions
+            | penDown curr_state -> PenDown instructions
+            | otherwise -> PenUp instructions
+          PenDown instructions
+            | penDown curr_state -> PenDown instructions
+            | otherwise -> PenUp instructions
           SetStyle lineStyle instructions -> SetStyle (style curr_state) instructions
           SetColour lineColour instructions -> SetColour (colour curr_state) instructions
 
