@@ -24,6 +24,7 @@ getNextInstruction instructions_1
       PenDown instructions_2 -> instructions_2
       PenUp instructions_2 -> instructions_2
 
+
 -- setter
 setNextInstruction :: Instructions -> Instructions -> Instructions
 setNextInstruction instructions_1 instructions_2 
@@ -34,6 +35,15 @@ setNextInstruction instructions_1 instructions_2
       SetColour colour instructions -> SetColour colour instructions_2
       PenDown instructions -> PenDown instructions_2
       PenUp instructions -> PenUp instructions_2
+
+
+getFinalStyle :: Instructions -> LineStyle
+getFinalStyle i = style $ snd (tortoise i start)
+
+
+getFinalColour :: Instructions -> Colour
+getFinalColour i = colour $ snd (tortoise i start)
+
 
 
 andThen :: Instructions -> Instructions -> Instructions
@@ -71,21 +81,29 @@ invisibly_helper i shouldDown
 
 
 retrace :: Instructions -> Instructions
-retrace i = retrace_helper i Stop
+retrace i 
+  | i == Stop = Stop
+  | otherwise = retrace_helper i (getNextInstruction i) Stop
 
-retrace_helper :: Instructions -> Instructions -> Instructions
-retrace_helper i reversed_i
-  | getNextInstruction i == Stop = reversed_i
-  | reverseInstruction i == Stop = reversed_i
-  | otherwise = retrace_helper (getNextInstruction i) $ setNextInstruction (reverseInstruction i) reversed_i
+
+-- if Stop, then Stop
+-- if Move, Trun, reverse it
+-- if PenUp, then PenDown, and ...
+-- if 
+
+retrace_helper :: Instructions -> Instructions -> Instructions -> Instructions
+retrace_helper curr_i toAdd_i reversed_i
+  | toAdd_i == Stop = setNextInstruction (reverseInstruction curr_i toAdd_i) reversed_i
+  | otherwise = retrace_helper toAdd_i (getNextInstruction toAdd_i) $ setNextInstruction (reverseInstruction curr_i toAdd_i) reversed_i
   where 
-    reverseInstruction :: Instructions -> Instructions
-    reverseInstruction i = case i of 
+    reverseInstruction :: Instructions -> Instructions -> Instructions
+    reverseInstruction curr_i toAdd_i = case curr_i of 
       Move distance instructions -> Move (-distance) instructions
       Turn angle instructions -> Turn (-angle) instructions
-      SetStyle lineStyle instructions -> instructions
-      SetColour colour instructions -> instructions
-      _ -> i
+      PenUp instructions -> PenDown instructions
+      PenDown instructions -> PenUp instructions
+      SetStyle lineStyle instructions -> SetStyle (getFinalStyle toAdd_i) instructions
+      SetColour colour instructions -> SetColour (getFinalColour toAdd_i) instructions
 
 
 overlay :: [Instructions] -> Instructions
