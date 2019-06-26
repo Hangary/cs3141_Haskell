@@ -74,14 +74,17 @@ retrace :: Instructions -> Instructions
 retrace i = retrace_helper i Stop
 
 retrace_helper :: Instructions -> Instructions -> Instructions
-retrace_helper i last_i
-  | i == Stop = last_i
-  | otherwise = retrace_helper (getNextInstruction i) $ setNextInstruction (reverseInstruction i) last_i
+retrace_helper i reversed_i
+  | i == Stop = reversed_i
+  | reverseInstruction i == Stop = reversed_i
+  | otherwise = retrace_helper (getNextInstruction i) $ setNextInstruction (reverseInstruction i) reversed_i
   where 
     reverseInstruction :: Instructions -> Instructions
     reverseInstruction i = case i of 
       Move distance instructions -> Move (-distance) instructions
       Turn angle instructions -> Turn (-angle) instructions
+      SetStyle lineStyle instructions -> instructions
+      SetColour colour instructions -> instructions
       _ -> i
 
 
