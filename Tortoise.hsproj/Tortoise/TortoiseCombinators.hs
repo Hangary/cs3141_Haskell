@@ -86,11 +86,6 @@ retrace i
   | otherwise = retrace_helper start i Stop
 
 
--- if Stop, then Stop
--- if Move, Trun, reverse it
--- if PenUp, then PenDown, and ...
--- if 
-
 changeState :: TortoiseState -> Instructions -> TortoiseState
 changeState s i
   | i == Stop = s
@@ -121,5 +116,7 @@ retrace_helper curr_state toreverse_i reversed_i
 
 
 overlay :: [Instructions] -> Instructions
-overlay is = error "'overlay' unimplemented"
+overlay is = case is of
+  [] -> Stop
+  (x:xs) -> (x `andThen` (invisibly (retrace x))) `andThen` (overlay xs)
 
