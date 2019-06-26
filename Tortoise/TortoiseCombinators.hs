@@ -83,7 +83,7 @@ invisibly_helper i shouldDown
 retrace :: Instructions -> Instructions
 retrace i 
   | i == Stop = Stop
-  | otherwise = retrace_helper i (getNextInstruction i) Stop
+  | otherwise = retrace_helper start i Stop
 
 
 -- if Stop, then Stop
@@ -91,19 +91,29 @@ retrace i
 -- if PenUp, then PenDown, and ...
 -- if 
 
-retrace_helper :: Instructions -> Instructions -> Instructions -> Instructions
-retrace_helper curr_i toAdd_i reversed_i
-  | toAdd_i == Stop = setNextInstruction (reverseInstruction curr_i toAdd_i) reversed_i
-  | otherwise = retrace_helper toAdd_i (getNextInstruction toAdd_i) $ setNextInstruction (reverseInstruction curr_i toAdd_i) reversed_i
-  where 
-    reverseInstruction :: Instructions -> Instructions -> Instructions
-    reverseInstruction curr_i toAdd_i = case curr_i of 
-      Move distance instructions -> Move (-distance) instructions
-      Turn angle instructions -> Turn (-angle) instructions
-      PenUp instructions -> PenDown instructions
-      PenDown instructions -> PenUp instructions
-      SetStyle lineStyle instructions -> SetStyle (getFinalStyle toAdd_i) instructions
-      SetColour colour instructions -> SetColour (getFinalColour toAdd_i) instructions
+changeState :: TortoiseState -> Instructions -> TortoiseState
+changeState s i
+  | i == Stop = s
+  | otherwise = snd (tortoise i_once s)
+    where i_once = setNextInstruction i Stop
+
+
+retrace_helper :: TortoiseState -> Instructions -> Instructions -> Instructions
+retrace_helper curr_state toreverse_i reversed_i
+  | toreverse_i == Stop = reversed_i
+  | otherwise = retrace_helper new_state new_toreverse_i new_reversed_i
+    where
+      new_state = changeState curr_state toreverse_i
+      new_toreverse_i = getNextInstruction toreverse_i
+      new_reversed_i = setNextInstruction (reverseInstruction toreverse_i) reversed_i
+      reverseInstruction :: Instructions -> Instructions
+      reverseInstruction i = case i of 
+          Move distance instructions -> Move (-distance) instructions
+          Turn angle instructions -> Turn (-angle) instructions
+          PenUp instructions -> PenDown instructions
+          PenDown instructions -> PenUp instructions
+          SetStyle lineStyle instructions -> SetStyle (style curr_state) instructions
+          SetColour lineColour instructions -> SetColour (colour curr_state) instructions
 
 
 overlay :: [Instructions] -> Instructions
