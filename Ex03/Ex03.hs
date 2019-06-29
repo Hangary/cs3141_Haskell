@@ -50,8 +50,12 @@ searchTrees = sized searchTrees'
 ----------------------
 
 mysteryPred :: Integer -> BinaryTree -> Bool
-mysteryPred i t = error "'mysteryPred' unimplemented"
-
+mysteryPred i t = case t of 
+  Leaf -> False
+  Branch val ltree rtree
+    | i == val -> True
+    | i < val -> mysteryPred i ltree
+    | i > val -> mysteryPred i rtree
 
 
 prop_mysteryPred_1 integer = 
@@ -61,13 +65,21 @@ prop_mysteryPred_2 integer =
   forAll searchTrees $ \tree -> not (mysteryPred integer (deleteAll integer tree))
 
 ----------------------
+
+-- change a binary tree to a sorted list
 mysterious :: BinaryTree -> [Integer]
-mysterious t = error "'mysterious' unimplemented"
+mysterious t = mysterious_helper t []
+  where 
+    mysterious_helper :: BinaryTree -> [Integer] -> [Integer]
+    mysterious_helper t added_i = case t of 
+      Leaf -> added_i
+      Branch val ltree rtree -> mysterious_helper ltree (val : (mysterious_helper rtree added_i))
 
 
 isSorted :: [Integer] -> Bool
 isSorted (x:y:rest) = x <= y && isSorted (y:rest)
 isSorted _ = True
+
 
 prop_mysterious_1 integer = forAll searchTrees $ \tree -> 
   mysteryPred integer tree == (integer `elem` mysterious tree)
@@ -80,10 +92,40 @@ prop_mysterious_2 = forAll searchTrees $ isSorted . mysterious
 sortedListsWithoutDuplicates :: Gen [Integer]
 sortedListsWithoutDuplicates = fmap (nub . sort) arbitrary
 
-astonishing :: [Integer] -> BinaryTree
-astonishing xs = error "'astonishing' unimplemented"
 
-                  
+balance :: BinaryTree -> BinaryTree
+balance t = case t of 
+  Leaf -> t
+  Branch _ ltree rtree
+    | abs (height ltree - height rtree) <= 1 -> t
+    | height ltree - height rtree > 1 -> rotateR t
+    | height rtree - height ltree > 1 -> rotateL t
+  where 
+    height :: BinaryTree -> Int
+    height Leaf = 0
+    height (Branch v l r) = 1 + max (height l) (height r)
+    rotateR :: BinaryTree -> BinaryTree
+    rotateR (Branch v (Branch lv llt lrt) rtree) = Branch lv (llt) (Branch v (lrt) (rtree))
+    rotateL :: BinaryTree -> BinaryTree
+    rotateL (Branch v ltree (Branch rv rlt rrt)) = Branch rv (Branch v (ltree) (rlt)) (rrt)
+
+
+-- helper function
+balanceInsert :: Integer -> BinaryTree -> BinaryTree
+balanceInsert i Leaf = Branch i Leaf Leaf
+balanceInsert i (Branch v l r) 
+  | i < v     = balance $ Branch v (balanceInsert i l) r
+  | otherwise = balance $ Branch v l (balanceInsert i r)
+
+
+astonishing :: [Integer] -> BinaryTree
+astonishing xs = astonishing_helper xs Leaf
+  where 
+    astonishing_helper :: [Integer] -> BinaryTree -> BinaryTree
+    astonishing_helper integers t = case integers of
+      [] -> balance t
+      (x:xs) -> astonishing_helper xs (balanceInsert x t)
+
 
 prop_astonishing_1 
   = forAll sortedListsWithoutDuplicates $ isBST . astonishing

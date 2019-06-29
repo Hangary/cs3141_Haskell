@@ -1,0 +1,10 @@
+-- Haskell Playground 1.0
+quickCheck prop_mysteryPred_1
+quickCheck prop_mysteryPred_2
+
+quickCheck prop_mysterious_1
+quickCheck prop_mysterious_2
+
+quickCheck prop_astonishing_1
+quickCheck prop_astonishing_2
+quickCheck prop_astonishing_3
