@@ -41,10 +41,10 @@ setNextInstruction i1 i2
 
 andThen :: Instructions -> Instructions -> Instructions
 andThen i1 i2 = case i1 of
-	Stop -> i2
-	_ -> case (getNextInstruction i1) of
-    Stop -> setNextInstruction i1 i2 
-    _    -> setNextInstruction i1 $ (getNextInstruction i1) `andThen` i2
+ Stop -> i2
+ _ -> case (getNextInstruction i1) of
+        Stop -> setNextInstruction i1 i2 
+        _    -> setNextInstruction i1 $ (getNextInstruction i1) `andThen` i2
 
 
 loop :: Int -> Instructions -> Instructions
