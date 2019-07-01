@@ -15,44 +15,36 @@ import Tortoise
 -- two helper functions:
 -- getter
 getNextInstruction :: Instructions -> Instructions
-getNextInstruction instructions_1
-  = case instructions_1 of 
-      Move distance instructions_2 -> instructions_2
-      Turn angle instructions_2 -> instructions_2
-      SetStyle lineStyle instructions_2 -> instructions_2
-      SetColour colour instructions_2 -> instructions_2
-      PenDown instructions_2 -> instructions_2
-      PenUp instructions_2 -> instructions_2
+getNextInstruction i1
+  = case i1 of 
+      Move distance i2      -> i2
+      Turn angle i2         -> i2
+      SetStyle lineStyle i2 -> i2
+      SetColour colour i2   -> i2
+      PenDown i2            -> i2
+      PenUp i2              -> i2
 
 
 -- setter
 setNextInstruction :: Instructions -> Instructions -> Instructions
-setNextInstruction instructions_1 instructions_2 
-  = case instructions_1 of 
-      Move distance instructions -> Move distance instructions_2
-      Turn angle instructions -> Turn angle instructions_2
-      SetStyle lineStyle instructions -> SetStyle lineStyle instructions_2
-      SetColour colour instructions -> SetColour colour instructions_2
-      PenDown instructions -> PenDown instructions_2
-      PenUp instructions -> PenUp instructions_2
+setNextInstruction i1 i2 
+  = case i1 of 
+      Move distance _       -> Move distance i2
+      Turn angle _          -> Turn angle i2
+      SetStyle lineStyle _  -> SetStyle lineStyle i2
+      SetColour colour _    -> SetColour colour i2
+      PenDown _             -> PenDown i2
+      PenUp _               -> PenUp i2
 
 
-getFinalStyle :: Instructions -> LineStyle
-getFinalStyle i = style $ snd (tortoise i start)
-
-
-getFinalColour :: Instructions -> Colour
-getFinalColour i = colour $ snd (tortoise i start)
-
-
+-- main functions:
 
 andThen :: Instructions -> Instructions -> Instructions
-andThen Stop instructions_2 = instructions_2
-andThen instructions_1 Stop = instructions_1
-andThen instructions_1 instructions_2 
-  = case (getNextInstruction instructions_1) of
-      Stop -> setNextInstruction instructions_1 instructions_2 
-      _    -> setNextInstruction instructions_1 $  (getNextInstruction instructions_1) `andThen` instructions_2
+andThen i1 i2 = case i1 of
+	Stop -> i2
+	_ -> case (getNextInstruction i1) of
+    Stop -> setNextInstruction i1 i2 
+    _    -> setNextInstruction i1 $ (getNextInstruction i1) `andThen` i2
 
 
 loop :: Int -> Instructions -> Instructions
@@ -62,47 +54,39 @@ loop n i
 
 
 invisibly :: Instructions -> Instructions
-invisibly i 
+invisibly i = PenUp $ invisibly_helper i True
+ where 
+ -- invisibly helper
+ invisibly_helper :: Instructions -> Bool -> Instructions
+ invisibly_helper i finalPenDown
   = case i of 
-      PenUp i2 -> PenUp $ invisibly_helper i2 False
-      Stop -> Stop
-      _  -> PenUp $ invisibly_helper i True 
-
-
-invisibly_helper :: Instructions -> Bool -> Instructions
-invisibly_helper i shouldDown
-  = case i of 
-      PenDown i2 -> PenUp $ invisibly_helper i2 True
-      PenUp i2 -> PenUp $ invisibly_helper i2 False
-      Stop -> case shouldDown of
-                True -> PenDown Stop
-                False -> Stop
-      _ -> setNextInstruction i $ invisibly_helper (getNextInstruction i) shouldDown
+      Stop -> case finalPenDown of
+          True  -> PenDown Stop
+          False -> Stop
+      PenDown i2  -> invisibly_helper i2 True
+      PenUp i2    -> invisibly_helper i2 False
+      _ -> setNextInstruction i $ invisibly_helper (getNextInstruction i) finalPenDown
 
 
 retrace :: Instructions -> Instructions
-retrace i 
-  | i == Stop = Stop
-  | otherwise = retrace_helper start i Stop
-
-
-changeState :: TortoiseState -> Instructions -> TortoiseState
-changeState s i
-  | i == Stop = s
-  | otherwise = snd (tortoise i_once s)
-    where i_once = setNextInstruction i Stop
-
-
-retrace_helper :: TortoiseState -> Instructions -> Instructions -> Instructions
-retrace_helper curr_state toreverse_i reversed_i
-  | toreverse_i == Stop = reversed_i
-  | otherwise = retrace_helper new_state new_toreverse_i new_reversed_i
-    where
-      new_state = changeState curr_state toreverse_i
-      new_toreverse_i = getNextInstruction toreverse_i
-      new_reversed_i = setNextInstruction (reverseInstruction toreverse_i) reversed_i
-      reverseInstruction :: Instructions -> Instructions
-      reverseInstruction i = case i of 
+retrace i = retrace_helper start i Stop
+  where
+   -- change the status of tortoise
+   changeState :: TortoiseState -> Instructions -> TortoiseState
+   changeState s i
+    | i == Stop = s
+    | otherwise = snd (tortoise (setNextInstruction i Stop) s)
+   -- retrace helper
+   retrace_helper :: TortoiseState -> Instructions -> Instructions -> Instructions
+   retrace_helper curr_state i reversed_i
+    | i == Stop = reversed_i
+    | otherwise = retrace_helper new_state new_i new_reversed_i
+      where
+        new_state = changeState curr_state i
+        new_i = getNextInstruction i
+        new_reversed_i = setNextInstruction (reverseInstruction i) reversed_i
+        reverseInstruction :: Instructions -> Instructions
+        reverseInstruction i = case i of 
           Move distance instructions -> Move (-distance) instructions
           Turn angle instructions -> Turn (-angle) instructions
           PenUp instructions

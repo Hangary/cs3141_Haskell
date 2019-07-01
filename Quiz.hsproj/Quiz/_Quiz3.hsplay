@@ -1,0 +1,40 @@
+-- Haskell Playground 1.0
+-- Q3
+transpose g1 == g1
+all or g2
+all (\x -> length x == length g2) g2
+map reverse g1 == g1
+
+let realref = ref4
+
+
+
+-- should right
+realref [] $ M 0 []
+
+realref g1 gm1
+realref (connect (1, 2) g1) (connectA (1, 2) gm1)
+realref g2 gm2
+realref (connect (1, 2) g2) (connectA (1, 2) gm2)
+realref g3 gm3
+realref (connect (1, 2) g3) (connectA (1, 2) gm3)
+
+-- should wrong
+realref g1 gm2
+realref g2 gm1
+realref g1 gm3
+realref g3 gm1
+realref g3 gm2
+realref g3 gm4
+
+-- Q6
+(\(M n l) -> l) $ toAbstract' g1
+realref g2 $ toAbstract' g2
+realref g3 $ toAbstract' g3
+
+
+toConcrete gm1
+realref (toConcrete gm1) gm1
+realref (toConcrete gm2) gm2
+realref (toConcrete gm3) gm3
+realref (toConcrete gm4) gm4
