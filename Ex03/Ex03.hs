@@ -49,6 +49,7 @@ searchTrees = sized searchTrees'
 
 ----------------------
 
+-- where i is in the binary tree
 mysteryPred :: Integer -> BinaryTree -> Bool
 mysteryPred i t = case t of 
   Leaf -> False

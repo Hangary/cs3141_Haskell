@@ -73,4 +73,11 @@ ex6 = flowerograph squareograph
 ex7 = circlographograph
 
 main = do
-  writePng "tortoise.png" (drawPicture $ tortoisePic ex1)
+  writePng "tortoise_1.png" (drawPicture $ tortoisePic ex1)
+  writePng "tortoise_2.png" (drawPicture $ tortoisePic ex2)
+  writePng "tortoise_3.png" (drawPicture $ tortoisePic ex3)
+  writePng "tortoise_4.png" (drawPicture $ tortoisePic ex4)
+  writePng "tortoise_5.png" (drawPicture $ tortoisePic ex5)
+  writePng "tortoise_6.png" (drawPicture $ tortoisePic ex6)
+  writePng "tortoise_7.png" (drawPicture $ tortoisePic ex7)
+

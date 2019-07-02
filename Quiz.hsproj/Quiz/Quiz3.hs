@@ -64,34 +64,15 @@ q2_prop_3 xs x = count x xs == count x (rev xs)
 
 -- data invariants
 
-g1 = [
-        [False, True,  True  ],
-        [True,  False, False ],
-        [True,  False, False ]  
-     ]
-     
-g2 = [  [False, False, False],
-        [False, False, False],
-        [False, False, False]   ]
-     
-g3 = [  [False, True, False],
-        [True, False, False],
-        [False, False, True]  ]
-
-gm1 = M 3 [(0, 1), (1, 0), (0, 2), (2, 0)]
-gm2 = M 3 []
-gm3 = M 3 [(0, 1), (1, 0), (2, 2)]
-gm4 = M 4 [(0, 1), (1, 0), (2, 2)]
-
-
-
--- wrong m
-g4 = [  [False, True,  False, False],
-        [False, False, False, False],
-        [False, False, True,  False],
-        [False, False, False, False]]
-
 type Graph = [[Bool]]
+
+wellformed :: Graph -> Bool
+wellformed g = (transpose g == g) 
+          && (all (\x -> length x == length g) g)
+
+
+
+
 
 newGraph :: Int -- number of nodes
          -> Graph
@@ -102,7 +83,7 @@ connected g (x, y) | x < length g && y < length g = (g !! x) !! y
                    | otherwise                    = False
 
 connect :: (Int, Int) -> Graph -> Graph
-connect (x, y) = modify x (modify y (\_ -> True))
+connect (x, y) = modify y (modify x (\_ -> True)) . modify x (modify y (\_ -> True))
   where
     modify :: Int -> (a -> a) -> [a] -> [a]
     modify 0 f (x:xs) = f x : xs

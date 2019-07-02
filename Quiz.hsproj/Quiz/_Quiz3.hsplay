@@ -1,14 +1,46 @@
 -- Haskell Playground 1.0
+g1 = [
+        [False, True,  True  ],
+        [True,  False, False ],
+        [True,  False, False ]  
+     ]
+     
+g2 = [  [False, False, False],
+        [False, False, False],
+        [False, False, False]   ]
+     
+g3 = [  [False, True, False],
+        [True, False, False],
+        [False, False, True]  ]
+
+gm1 = M 3 [(0, 1), (1, 0), (0, 2), (2, 0)]
+gm2 = M 3 []
+gm3 = M 3 [(0, 1), (1, 0), (2, 2)]
+gm4 = M 4 [(0, 1), (1, 0), (2, 2)]
+
+
+-- wrong m
+g4 = [  [False, True,  False, False],
+        [False, False, False, False],
+        [False, False, True,  False],
+        [False, False, False, False]]
+
+
 -- Q3
 transpose g1 == g1
 all or g2
 all (\x -> length x == length g2) g2
 map reverse g1 == g1
 
+
+-- Q4
+wellformed (newGraph 3)
+wellformed (connect (1,2) g1)
+wellformed g4
+
+
+-- Q5
 let realref = ref4
-
-
-
 -- should right
 realref [] $ M 0 []
 
@@ -26,6 +58,7 @@ realref g1 gm3
 realref g3 gm1
 realref g3 gm2
 realref g3 gm4
+
 
 -- Q6
 (\(M n l) -> l) $ toAbstract' g1
