@@ -66,14 +66,6 @@ q2_prop_3 xs x = count x xs == count x (rev xs)
 
 type Graph = [[Bool]]
 
-wellformed :: Graph -> Bool
-wellformed g = (transpose g == g) 
-          && (all (\x -> length x == length g) g)
-
-
-
-
-
 newGraph :: Int -- number of nodes
          -> Graph
 newGraph n = replicate n (replicate n False)
@@ -90,9 +82,13 @@ connect (x, y) = modify y (modify x (\_ -> True)) . modify x (modify y (\_ -> Tr
     modify n f (x:xs) = x : modify (n - 1) f xs
     modify n f []     = []
 
+wellformed :: Graph -> Bool
+wellformed g = (transpose g == g) 
+          && (all (\x -> length x == length g) g)
 
 
-data Model = M Int [(Int, Int)]
+data Model = M Int [(Int, Int)] deriving (Eq, Show)
+
 
 newGraphA :: Int -> Model
 newGraphA n = M n []

@@ -61,13 +61,13 @@ realref g3 gm4
 
 
 -- Q6
-(\(M n l) -> l) $ toAbstract' g1
-realref g2 $ toAbstract' g2
-realref g3 $ toAbstract' g3
+let x = 1
+let y = 2
+let g = g1
+let m = gm1
 
+connectA (x,y) (toAbstract' g) == toAbstract' (connect (x,y) g)
 
-toConcrete gm1
-realref (toConcrete gm1) gm1
-realref (toConcrete gm2) gm2
-realref (toConcrete gm3) gm3
-realref (toConcrete gm4) gm4
+connectA (x,y) (toAbstract'' g) == toAbstract'' (connect (x,y) g)
+
+toConcrete (connectA (x,y) m) == connect (x,y) (toConcrete m)
