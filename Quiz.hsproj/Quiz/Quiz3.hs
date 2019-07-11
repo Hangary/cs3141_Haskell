@@ -5,16 +5,40 @@ import Data.Char
 import Data.List
 import Test.QuickCheck
 import Test.QuickCheck.Modifiers
+import Test.QuickCheck.Function
 
 
 
 -- Q1
 
-merge :: (Ord a) => [a] -> [a] -> [a]
-merge (x:xs) (y:ys) | x < y     = x:merge xs (y:ys)
-                    | otherwise = y:merge (x:xs) ys
-merge xs [] = xs
-merge [] ys = ys
+realmerge :: (Ord a) => [a] -> [a] -> [a]
+realmerge (x:xs) (y:ys) | x < y     = x:realmerge xs (y:ys)
+                        | otherwise = y:realmerge (x:xs) ys
+realmerge xs [] = xs
+realmerge [] ys = ys
+
+merge' :: (Ord a) => [a] -> [a] -> [a]
+merge' (x:xs) (y:ys)  = 
+  case (sorted xs) of
+    True | x < y     -> x:merge' xs (y:ys)
+         | otherwise -> y:merge' (x:xs) ys
+    False -> []
+merge' xs [] = xs
+merge' [] ys = ys
+
+
+merge'' :: (Ord a) => [a] -> [a] -> [a]
+merge'' (x:xs) (y:ys)  = 
+  case (sorted xs) of
+    True | x < y     -> x:merge'' xs (y:ys)
+         | otherwise -> y:merge'' (x:xs) ys
+    False -> take ((length xs) + (length ys) + 2) (repeat x)
+merge'' xs [] = xs
+merge'' [] ys = ys
+
+
+merge = merge'
+
 
 sorted :: Ord a => [a] -> Bool
 sorted (x1 : x2 : xs) = (x1 <= x2) && sorted (x2 : xs)
@@ -32,20 +56,25 @@ q1_prop_2 xs ys = length (merge xs ys) == length xs + length ys
 q1_prop_3 :: OrderedList Int -> OrderedList Int -> Bool
 q1_prop_3 (Ordered xs) (Ordered ys) = merge xs ys == sort (xs ++ ys)
 
-q1_prop_4 :: (Int -> Int) -> [Int] -> [Int] -> Bool
-q1_prop_4 f xs ys = sort (map f (merge xs ys))
+q1_prop_4 :: Fun Int Int -> [Int] -> [Int] -> Bool
+q1_prop_4 (Fn f) xs ys = sort (map f (merge xs ys))
               == sort (merge (map f xs) (map f ys))
 
-q1_prop_5 :: (Int -> Bool) -> OrderedList Int -> OrderedList Int -> Bool
-q1_prop_5 f (Ordered xs) (Ordered ys) = filter f (merge xs ys) 
+q1_prop_5 :: Fun Int Bool -> OrderedList Int -> OrderedList Int -> Bool
+q1_prop_5 (Fn f) (Ordered xs) (Ordered ys) = filter f (merge xs ys) 
                                   == merge (filter f xs) (filter f ys)
                                   
 
 -- Q2
 
-rev :: [Int] -> [Int]
-rev (x:xs) = rev xs ++ [x]
-rev []     = []
+rev = rev2
+
+-- this just pass 1
+rev1 :: [Int] -> [Int]
+rev1 _ = []
+-- this pass 2 and 3: prop 1 is not redundant 
+rev2 :: [Int] -> [Int]
+rev2 l = l
 
 q2_prop_1 :: [Int] -> [Int] -> Bool
 q2_prop_1 xs ys = rev (xs ++ ys) == rev ys ++ rev xs

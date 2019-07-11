@@ -1,4 +1,21 @@
 -- Haskell Playground 1.0
+-- Q1
+
+quickCheck q1_prop_1
+quickCheck q1_prop_2
+quickCheck q1_prop_3
+quickCheck q1_prop_4
+quickCheck q1_prop_5
+
+-- Q2
+quickCheck q2_prop_1
+quickCheck q2_prop_2
+quickCheck q2_prop_3
+
+
+
+-- date invariant
+
 g1 = [
         [False, True,  True  ],
         [True,  False, False ],

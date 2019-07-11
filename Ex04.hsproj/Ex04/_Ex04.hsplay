@@ -1,0 +1,12 @@
+-- Haskell Playground 1.0
+calculate "3 4 +"       -- Just 7
+calculate "3 4 - 5 +"   -- Just 4
+calculate "3 4 2 / *"   -- Just 6
+calculate "3 4 2 / * +" -- Nothing
+
+let str = tokenise "3 4 - 5 +"
+unwrapMaybe (Just m) = m
+unwrapCalc (C a) = a
+let t = unwrapMaybe str
+
+(unwrapCalc $ fmap (pure []) ((pure t) >>= evaluate)) []
