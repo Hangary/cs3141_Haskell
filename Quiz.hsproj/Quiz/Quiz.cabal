@@ -16,6 +16,6 @@ executable Quiz
     other-modules:
         Quiz2
         Quiz1
-        Quiz4
         Quiz3
+        Quiz4
 

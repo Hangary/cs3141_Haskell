@@ -11,12 +11,14 @@ parseToken "/" = Just (Operator div)
 parseToken "*" = Just (Operator (*))
 parseToken str = fmap Number (readMaybe str)
 
+
 -- task 1
 tokenise :: String -> Maybe [Token]
 tokenise str = foldr (\a b -> (:) <$> a <*> b) (pure []) $ fmap parseToken $ words str
 
 
 newtype Calc a = C ([Int] -> Maybe ([Int], a))
+
 
 -- task 2
 pop :: Calc Int
@@ -55,8 +57,6 @@ instance Monad Calc where
     where unwrapCalc (C a) = a
 
 
-
-
 -- task 3
 evaluate :: [Token] -> Calc Int
 evaluate ts = real_evaluate ts
@@ -75,4 +75,3 @@ calculate s = case (tokenise s) of
   Nothing -> Nothing
   Just t -> fmap snd $ unwrapCalc ((pure t) >>= evaluate) []
     where unwrapCalc (C a) = a
-

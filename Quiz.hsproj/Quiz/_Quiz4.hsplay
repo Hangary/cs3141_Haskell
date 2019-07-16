@@ -1,1 +1,24 @@
 -- Haskell Playground 1.0
+let l1 = One 1
+let l2 = Cons 3 $ Cons 2 $ One 1
+
+let l = l2
+
+fmap id l == id l
+
+
+
+-- Q5
+let pair = pair''''
+pair (Just 1) (Just 2)
+pair (Just 1) (Nothing)
+
+-- Q7
+s [Just 1, Just 2, Just 3]
+s [Nothing]
+s [Just 1, Nothing]
+
+-- Q8
+m f []
+m f [1, 15]
+m f [-1, 1]
