@@ -1,0 +1,5 @@
+-- Haskell Playground 1.0
+--capitalise "input1.txt" "output1.txt"
+
+quickCheck prop_basic
+quickCheck prop_optimality

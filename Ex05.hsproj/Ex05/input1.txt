@@ -1,0 +1,5 @@
+I love Haskell! 123
+
+But it is true that it is so hard.
+
+123
