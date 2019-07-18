@@ -20,3 +20,8 @@ unwrapCalc (C a) = a
 let t = unwrapMaybe str
 
 (unwrapCalc $ fmap (pure []) ((pure t) >>= evaluate)) []
+
+-- some tests
+isNothing (tokenise "1 23 k /")
+
+map unToken (unMaybe (tokenise "1 23 0 41")) == [1,23,0,41]

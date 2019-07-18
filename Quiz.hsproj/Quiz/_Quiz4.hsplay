@@ -7,6 +7,11 @@ let l = l2
 fmap id l == id l
 
 
+-- Q4
+let v = Cons 4 (One 1)
+appLaw1 v
+--appLaw2
+
 
 -- Q5
 let pair = pair''''

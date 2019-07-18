@@ -1,6 +1,12 @@
 module Ex04 where
 
 import Text.Read (readMaybe)
+import Data.Maybe
+
+unMaybe (Just k) = k
+
+unToken (Number n) = n
+unToken _ = error "Got an operator!"
 
 data Token = Number Int | Operator (Int -> Int -> Int)
 

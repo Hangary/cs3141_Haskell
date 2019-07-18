@@ -1,21 +1,20 @@
-name: Quiz
+name: Ex05
 version: 1.0
-cabal-version: 1.22
+cabal-version: >=1.11
 build-type: Simple
 license: AllRightsReserved
 stability: experimental
 x-ghc-framework-version: 8.0.2-9.6-2
 x-last-ide-version: HfM1.6.1
 
-executable Quiz
+executable Ex05
     main-is: Main.hs
     build-depends:
-        QuickCheck -any,
-        base -any
+        mtl -any,
+        random -any,
+        base -any,
+        QuickCheck -any
     default-language: Haskell2010
     other-modules:
-        Quiz4
-        Quiz3
-        Quiz2
-        Quiz1
+        Ex05
 

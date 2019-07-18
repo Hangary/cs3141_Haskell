@@ -24,7 +24,26 @@ data NonEmptyList a = One a | Cons a (NonEmptyList a) deriving (Eq)
 instance Functor NonEmptyList where
   fmap f (One x) = One (f x)
   fmap f (Cons x xs) = Cons (f x) (fmap f xs)
-  
+
+-- Q4
+instance Applicative NonEmptyList where
+  pure x = Cons x (pure x)
+  (One f) <*> (One x) = One (f x)
+  (One f) <*> (Cons x _) = One (f x)
+  (Cons f _) <*> (One x) = One (f x)
+  (Cons f fs) <*> (Cons x xs) = Cons (f x) (fs <*> xs)
+
+
+appLaw1 :: NonEmptyList Int -> Bool
+appLaw1 v = (pure id <*> v) == v
+-- Law 2
+appLaw2 :: Bool
+appLaw2 = (pureF <*> pureX) == pureY
+  where pureF = pure (\x -> x * 3) 
+        pureX = pure 3 :: NonEmptyList Int
+        pureY = pure 9 :: NonEmptyList Int
+-- Law 3
+
 
 
 -- Q5
