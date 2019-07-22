@@ -1,0 +1,14 @@
+name: Ex06
+version: 1.0
+cabal-version: >=1.11
+build-type: Simple
+license: AllRightsReserved
+stability: experimental
+x-ghc-framework-version: 8.0.2-9.6-2
+x-last-ide-version: HfM1.6.1
+
+executable Ex06
+    main-is: Ex06.hs
+    build-depends:
+        base -any
+
