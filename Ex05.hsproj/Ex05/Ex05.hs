@@ -22,16 +22,15 @@ capitalise i o = do
 sumFile :: IO ()
 sumFile = do
   args <- getArgs
-  if (length args /= 2)
-  then
-    return ()
+  if length args /= 2
+  then return ()
   else do
     let i = args !! 0
         o = args !! 1
     contents <- readFile i
     writeFile o $ sumStrings contents
     where sumStrings :: String -> String
-          sumStrings s = show $ sum $ fmap read $ words s
+          sumStrings s = show $ sum (read <$> words s)
        
 
 -- task 3
@@ -92,10 +91,10 @@ ai = Player { guess = guess, wrong = wrong }
       return $ midpoint lo hi
     wrong Lower  = do 
       (lo, hi) <- get
-      put (lo, (midpoint lo hi) - 1)
+      put (lo, midpoint lo hi - 1)
     wrong Higher = do 
       (lo, hi) <- get
-      put ((midpoint lo hi) + 1, hi)
+      put (midpoint lo hi + 1, hi)
 
 
 prop_basic (Positive n) = forAll (choose (1,n)) $ \x -> evalState (guessingGame x n ai) (1,n)
