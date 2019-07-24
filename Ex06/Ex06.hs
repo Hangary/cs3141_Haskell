@@ -60,28 +60,46 @@ ex3 :: Formula (Bool, (Int, ()))
 ex3 = Exists [False, True] $ \p -> 
       Exists [0..2] $ \n -> 
         Body $ p `Or` (Con 0 `Smaller` n)
+        
+-- my own tests
+ex4 :: Formula (Bool, (Int, ()))
+ex4 = Exists [False] $ \p -> 
+      Exists [0] $ \n -> 
+        Body $ p `Or` (Con 0 `Smaller` n)
 
 -- Evaluating terms
 -- ----------------
 eval :: Term t -> t
-eval p = error "'eval' unimplemented"
-
-
+eval p = case p of
+  Con t -> t
+  And t1 t2 -> eval t1 && eval t2
+  Or  t1 t2 -> eval t1 || eval t2
+  Smaller t1 t2 -> eval t1 < eval t2
+  Plus t1 t2 -> eval t1 + eval t2
+  Name _ -> error "eval: Name"  
 -- the Name constructor is not relevant for evaluation
 -- just throw an error if it is encountered:
-eval (Name _) = error "eval: Name"   
 
 
 -- Checking formulas
 -- -----------------
 
 satisfiable :: Formula ts -> Bool
-satisfiable f = error "'satisfiable' unimplemented"
+satisfiable f = case f of
+  Body t -> eval t
+  Exists [] ttoF -> False
+  Exists (x:xs) ttoF -> satisfiable (ttoF (Con x)) 
+                        || satisfiable (Exists xs ttoF)
 
 
 -- Enumerating solutions of formulae
 -- ---------------------------------
 
 solutions :: Formula ts -> [ts]
-solutions f = error "'solutions' unimplemented"
+solutions f = case f of
+  Body t -> [()]
+  Exists ls ttoF -> [(a, b) | a <- ls,
+                              b <- solutions (ttoF (Con a)),
+                              satisfiable (ttoF (Con a))]
+         
 
