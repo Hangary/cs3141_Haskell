@@ -5,8 +5,8 @@ build-type: Simple
 license: AllRightsReserved
 stability: experimental
 data-files:
-    Tests/transcript.txt
     Untyped.hs
+    Tests/transcript.txt
 x-ghc-framework-version: 8.0.2-9.6-2
 x-last-ide-version: HfM1.6.1
 
@@ -22,10 +22,10 @@ executable HareTests
         mtl -any
     default-language: Haskell2010
     other-modules:
-        Hare
+        HareMonad
+        Tests.Transcript
         Tests.Examples
         Tests.UnitTests
-        Tests.Transcript
         Tests.Support
-        HareMonad
+        Hare
 
