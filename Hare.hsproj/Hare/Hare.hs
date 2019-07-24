@@ -52,16 +52,25 @@ string s = case s of
   [] -> Action (\_ -> []) Empty
   x:xs -> Action (\(l,ls) -> l:ls) (Seq (Char [x]) (string xs))
   
+-- using Action, Choose and Empty
 choose :: [RE a] -> RE a
 choose res = case res of
   [] -> Fail
   x:xs -> Choose x (choose xs)
   
+-- bug
 option :: RE a -> RE (Maybe a)
-option re = error "'option' unimplemented"
+option re = Choose (Action (\x -> Just x) re) (Action (\_ -> Nothing) Empty)
 
+        
 rpt :: Int -> RE a -> RE [a]
-rpt n re = error "'rpt' unimplemented"
+rpt n re
+  | n <= 0    = Action (\_ -> []) Empty
+  | otherwise = re `cons` (rpt (n - 1) re)
 
 rptRange :: (Int, Int) -> RE a -> RE [a]
-rptRange (x,y) re = error "'rptRange' unimplemented"
+rptRange (x,y) re = choose $ helper (x,y) re
+  where helper (i,j) re
+          | i > j  = []
+          | i == j = [rpt i re]
+          | i < j  = [rpt j re] ++ helper (i,j-1) re
