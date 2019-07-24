@@ -4,6 +4,8 @@ import Control.Monad
 import Control.Applicative 
 import HareMonad 
 
+-- task 1 and 2
+
 data RE :: * -> * where 
   Empty :: RE ()
   Fail :: RE a
@@ -33,25 +35,33 @@ matchAnywhere re = match re <|> (readCharacter >> matchAnywhere re)
 (=~) :: (Alternative f, Monad f) => String -> RE a -> f a 
 (=~) = flip (hare . matchAnywhere)
 
+
+-- task 3
+
 infixr `cons`  
 cons :: RE a -> RE [a] -> RE [a]
-cons x xs = error "'cons' unimplemented"
+cons x xs = Action (\(l,ls) -> l:ls) (Seq x xs)
 
+-- using Action, Seq and Star
+plus :: RE a -> RE [a]
+plus re = re `cons` (Star re)
+
+-- using Char, cons, Empty and Action
 string :: String -> RE String
-string xs = error "'string' unimplemented"
+string s = case s of 
+  [] -> Action (\_ -> []) Empty
+  x:xs -> Action (\(l,ls) -> l:ls) (Seq (Char [x]) (string xs))
+  
+choose :: [RE a] -> RE a
+choose res = case res of
+  [] -> Fail
+  x:xs -> Choose x (choose xs)
+  
+option :: RE a -> RE (Maybe a)
+option re = error "'option' unimplemented"
 
 rpt :: Int -> RE a -> RE [a]
 rpt n re = error "'rpt' unimplemented"
 
 rptRange :: (Int, Int) -> RE a -> RE [a]
 rptRange (x,y) re = error "'rptRange' unimplemented"
-
-option :: RE a -> RE (Maybe a)
-option re = error "'option' unimplemented"
-
-plus :: RE a -> RE [a]
-plus re = error "'plus' unimplemented"
-
-choose :: [RE a] -> RE a
-choose res = error "'choose' unimplemented"
-

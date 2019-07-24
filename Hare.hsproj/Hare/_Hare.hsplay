@@ -1,0 +1,24 @@
+-- Haskell Playground 1.0
+
+-- Action
+"***" =~ Action length (Star (Char ['*'])) :: [Int]
+
+-- cons
+"10100" =~ cons (Char ['1']) (Star (Char ['0'])) :: [String]
+"10100" =~ cons (Char ['1']) (Action (const []) Empty) :: [String]
+
+-- plus
+"10100" =~ plus (Char ['0']) :: [String]
+let atoz = Char ['a'..'z']
+let digits = Char ['0'..'9']
+"ab1c3" =~ plus (atoz `Seq` digits) :: [[(Char,Char)]]
+
+-- string
+let comp3141 = string "COMP3141"
+"My favourite subject is COMP3141" =~ comp3141 :: Maybe String
+"My favourite subject is MATH1141" =~ comp3141 :: Maybe String
+
+-- choose function
+let re = choose [string "COMP", string "MATH", string "PHYS"]
+"COMP3141, MATH1081, PHYS1121, COMP3121" =~ re :: [String]
+"abc" =~ choose [] :: Maybe String
