@@ -21,15 +21,11 @@ match re = case re of
               x <- readCharacter
               guard (x `elem` cs)
               pure x
-  Seq a b -> do
-              ra <- match a 
-              rb <- match b  
-              pure (ra, rb)
+  Seq a b -> (,) <$> match a <*> match b
   Choose a b -> match a <|> match b
   Star a -> (:) <$> match a <*> match (Star a)
             <|> pure []
             
-
 matchAnywhere :: (Alternative f, Monad f) => RE a -> Hare f a
 matchAnywhere re = match re <|> (readCharacter >> matchAnywhere re)
 
