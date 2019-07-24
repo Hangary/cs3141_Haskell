@@ -25,6 +25,7 @@ match re = case re of
   Choose a b -> match a <|> match b
   Star a -> (:) <$> match a <*> match (Star a)
             <|> pure []
+  Action f r -> fmap f (match r)
             
 matchAnywhere :: (Alternative f, Monad f) => RE a -> Hare f a
 matchAnywhere re = match re <|> (readCharacter >> matchAnywhere re)
