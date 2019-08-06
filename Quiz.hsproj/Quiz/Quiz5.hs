@@ -16,10 +16,11 @@ turn direction = return ()
 
 robot = do
   sensed <- obstructed
-  if sensed 
+  if sensed
     then turn L
+         >> robot
     else forward
-  robot
+         >> robot
 
 
 -- Quiz 6

@@ -19,5 +19,4 @@ q62 = getLine
 q66 = do x <- getLine; 
          putStrLn . filter isDigit $ x; 
          q66
-q67 = do getLine >>= \x -> putStrLn (filter isDigit x); 
-         q67
+q67 = do getLine >>= \x -> putStrLn (filter isDigit x); q67

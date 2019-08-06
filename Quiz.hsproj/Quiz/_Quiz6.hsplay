@@ -1,0 +1,12 @@
+-- Haskell Playground 1.0
+-- q3
+addV (vec1D 1) (vec2D (1,2))  -- this wrong
+addV (vec2D (2,3)) (vec2D (1,2))  -- this right
+
+
+-- q5
+root (Leaf)
+root (Branch 1 Leaf (Branch 2 Leaf Leaf))
+
+evalArith (Plus (Const 1) (Const 2))
+

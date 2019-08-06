@@ -67,6 +67,15 @@ ex4 = Exists [False] $ \p ->
       Exists [0] $ \n -> 
         Body $ p `Or` (Con 0 `Smaller` n)
 
+ex5 :: Formula (Int, ())     
+ex5 = Exists [-5..10] $ \n ->
+        Body $ ((n `Plus` Con 1) `Smaller` n) `Or` (Con 0 `Smaller` n)
+
+ex6 :: Formula (Int, (Int, ()))  
+ex6 = Exists [1..5] $ \p ->
+      Exists [-1..5] $ \n ->
+        Body $ (p `Plus` n) `Smaller` p `And` (Con 1 `Smaller` p)   
+
 -- Evaluating terms
 -- ----------------
 eval :: Term t -> t

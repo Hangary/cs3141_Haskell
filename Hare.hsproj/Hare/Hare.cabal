@@ -22,10 +22,10 @@ executable HareTests
         mtl -any
     default-language: Haskell2010
     other-modules:
-        HareMonad
-        Hare
         Tests.Support
         Tests.Transcript
-        Tests.Examples
         Tests.UnitTests
+        Tests.Examples
+        Hare
+        HareMonad
 

@@ -15,9 +15,10 @@ executable Quiz
         base -any
     default-language: Haskell2010
     other-modules:
-        Quiz3
         Quiz5
         Quiz1
+        Quiz3
         Quiz4
+        Quiz6
         Quiz2
 
